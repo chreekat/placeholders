@@ -19,7 +19,7 @@ module Development.Placeholders (
 
 import Control.Exception (Exception, throw)
 import Data.Typeable (Typeable)
-import Language.Haskell.TH (Q, Exp, Loc(..), litE, stringL, location, report)
+import Language.Haskell.TH (Q, Exp, Loc(..), litE, stringL, location, reportWarning)
 
 -- | Thrown when attempting to evaluate a placeholder at runtime.
 data PlaceholderException = PlaceholderException String
@@ -46,7 +46,7 @@ todo msg = placeholder $ "TODO: " ++ msg
 -- before packaging your code.
 placeholder :: String -> Q Exp
 placeholder msg = do
-    emitWarning msg
+    reportWarning msg
     placeholderNoWarning msg
 
 -- | Similar to 'placeholder', but does not generate a compiler warning. Use
@@ -55,9 +55,6 @@ placeholderNoWarning :: String -> Q Exp
 placeholderNoWarning msg = do
     runtimeMsg <- formatMessage msg `fmap` location
     [| throw $ PlaceholderException $(litE $ stringL runtimeMsg) |]
-
-emitWarning :: String -> Q ()
-emitWarning msg = report False $ msg
 
 formatMessage :: String -> Loc -> String
 formatMessage msg loc = msg ++ " at " ++ formatLoc loc

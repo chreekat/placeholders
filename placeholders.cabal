@@ -1,5 +1,5 @@
 Name:                placeholders
-Version:             0.1
+Version:             0.1.1
 Synopsis:            Placeholders for use while developing Haskell code
 Description:         While working on some Haskell code, it is often useful to
                      work incrementally by inserting @undefined@ as a
